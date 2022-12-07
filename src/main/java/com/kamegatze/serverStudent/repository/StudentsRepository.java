@@ -39,14 +39,14 @@ public class StudentsRepository {
         jdbcTemplate.update("DELETE FROM STUDENTS WHERE STID=?", id);
     }
 
-    public void updateStudent(Student student, int id) {
+    public void updateStudent(Student student) {
         jdbcTemplate.update("UPDATE STUDENTS SET LASTNAME=?, FIRSTNAME=?, PATRONYMIC=?, FORMSTUDYID=?, GROUPID=? WHERE STID=?",
                 student.getLastName(),
                 student.getFirstName(),
                 student.getPatronymic(),
                 student.getFormStudyId(),
                 student.getGroupId(),
-                id
+                student.getId()
                 );
     }
 

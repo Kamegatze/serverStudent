@@ -47,8 +47,8 @@ public class StudentController {
         studentsRepository.deleteStudent(id);
     }
 
-    @PatchMapping("/update/{id}")
-    public void updateStudent(@Valid @RequestBody Student student, @PathVariable("id") int id) {
-        studentsRepository.updateStudent(student, id);
+    @PatchMapping("/update")
+    public void updateStudent(@Valid @RequestBody Student student) {
+        studentsRepository.updateStudent(student);
     }
 }
