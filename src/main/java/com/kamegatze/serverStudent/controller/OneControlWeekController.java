@@ -39,7 +39,7 @@ public class OneControlWeekController {
         oneControlWeekRepository.updateOneControlWeek(oneControlWeek);
     }
 
-    @DeleteMapping("/delete/{subjectId}/{studentId}/{semesterId}/{teacherId}")
+    @DeleteMapping("/delete")
     public void deleteOneControlWeek(@Valid @RequestBody OneControlWeek oneControlWeek) {
         oneControlWeekRepository.deleteOneControlWeek(oneControlWeek);
     }
