@@ -1,0 +1,242 @@
+--создания работтников
+
+CREATE TABLE IF NOT EXISTS public.employee
+(
+    id integer NOT NULL DEFAULT nextval('emloyee_id_seq'::regclass),
+    email text COLLATE pg_catalog."default" NOT NULL,
+    password text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT emloyee_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.employee
+    OWNER to postgres;
+--создания факультетов
+CREATE TABLE IF NOT EXISTS public.faculty
+(
+    facid integer NOT NULL DEFAULT nextval('faculty_fucid_seq'::regclass),
+    title text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT faculty_pkey PRIMARY KEY (facid)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.faculty
+    OWNER to postgres;
+
+--форма обучения
+CREATE TABLE IF NOT EXISTS public.formstudy
+(
+    fsid integer NOT NULL DEFAULT nextval('formsstudy_id_seq'::regclass),
+    forms_study text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT formsstudy_pkey PRIMARY KEY (fsid)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.formstudy
+    OWNER to postgres;
+    
+--группы на фокультете
+CREATE TABLE IF NOT EXISTS public.group_faculty
+(
+    gpid integer NOT NULL DEFAULT nextval('group_faculty_gpid_seq'::regclass),
+    groups text COLLATE pg_catalog."default" NOT NULL,
+    specializationid integer NOT NULL,
+    CONSTRAINT group_faculty_pkey PRIMARY KEY (gpid),
+    CONSTRAINT group_faculty_specializationid_fkey FOREIGN KEY (specializationid)
+        REFERENCES public.specialization (spid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.group_faculty
+    OWNER to postgres;
+    
+--первая контрольная неделя
+CREATE TABLE IF NOT EXISTS public.one_controll_week
+(
+    studentid integer NOT NULL,
+    subjectid integer NOT NULL,
+    teacherid integer NOT NULL,
+    semester integer NOT NULL,
+    mark double precision NOT NULL,
+    id integer NOT NULL DEFAULT nextval('one_controll_week_id_seq'::regclass),
+    CONSTRAINT one_controll_week_pkey PRIMARY KEY (id),
+    CONSTRAINT semesterid FOREIGN KEY (semester)
+        REFERENCES public.semesters (semester) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT studentid FOREIGN KEY (studentid)
+        REFERENCES public.students (stid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT subjectid FOREIGN KEY (subjectid)
+        REFERENCES public.subject (sbid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT teacherid FOREIGN KEY (teacherid)
+        REFERENCES public.teacher (teachid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.one_controll_week
+    OWNER to postgres;
+    
+--третья контрольная неделя
+CREATE TABLE IF NOT EXISTS public.three_controll_week
+(
+    studentid integer NOT NULL,
+    subjectid integer NOT NULL,
+    teacherid integer NOT NULL,
+    semester integer NOT NULL,
+    mark double precision NOT NULL,
+    id integer NOT NULL DEFAULT nextval('three_controll_week_id_seq'::regclass),
+    CONSTRAINT three_controll_week_pkey PRIMARY KEY (id),
+    CONSTRAINT semesterid FOREIGN KEY (semester)
+        REFERENCES public.semesters (semester) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT studentid FOREIGN KEY (studentid)
+        REFERENCES public.students (stid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT subjectid FOREIGN KEY (subjectid)
+        REFERENCES public.subject (sbid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT teacherid FOREIGN KEY (teacherid)
+        REFERENCES public.teacher (teachid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.three_controll_week
+    OWNER to postgres;
+    
+--вторая контроьная неделя
+
+CREATE TABLE IF NOT EXISTS public.two_controll_week
+(
+    studentid integer NOT NULL,
+    subjectid integer NOT NULL,
+    teacherid integer NOT NULL,
+    semester integer NOT NULL,
+    mark double precision NOT NULL,
+    id integer NOT NULL DEFAULT nextval('two_controll_week_id_seq'::regclass),
+    CONSTRAINT two_controll_week_pkey PRIMARY KEY (id),
+    CONSTRAINT semsterid FOREIGN KEY (semester)
+        REFERENCES public.semesters (semester) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT studentid FOREIGN KEY (studentid)
+        REFERENCES public.students (stid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT subjectid FOREIGN KEY (subjectid)
+        REFERENCES public.subject (sbid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT teacherid FOREIGN KEY (teacherid)
+        REFERENCES public.teacher (teachid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.two_controll_week
+    OWNER to postgres;
+    
+--специальность
+CREATE TABLE IF NOT EXISTS public.specialization
+(
+    spid integer NOT NULL DEFAULT nextval('specialization_spid_seq'::regclass),
+    title text COLLATE pg_catalog."default" NOT NULL,
+    facultyid integer NOT NULL,
+    CONSTRAINT specialization_pkey PRIMARY KEY (spid),
+    CONSTRAINT specialization_facultyid_fkey FOREIGN KEY (facultyid)
+        REFERENCES public.faculty (facid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.specialization
+    OWNER to postgres;
+    
+--студенты
+CREATE TABLE IF NOT EXISTS public.students
+(
+    stid integer NOT NULL DEFAULT nextval('students_stid_seq'::regclass),
+    lastname_st text COLLATE pg_catalog."default" NOT NULL,
+    firstname_st text COLLATE pg_catalog."default" NOT NULL,
+    patronymic_st text COLLATE pg_catalog."default" NOT NULL,
+    formstudyid integer NOT NULL,
+    groupid integer NOT NULL,
+    email text COLLATE pg_catalog."default",
+    password text COLLATE pg_catalog."default",
+    role text COLLATE pg_catalog."default",
+    CONSTRAINT students_pkey PRIMARY KEY (stid),
+    CONSTRAINT students_formstudyid_fkey FOREIGN KEY (formstudyid)
+        REFERENCES public.formstudy (fsid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT students_groupid_fkey FOREIGN KEY (groupid)
+        REFERENCES public.group_faculty (gpid) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.students
+    OWNER to postgres;
+    
+--предметы
+CREATE TABLE IF NOT EXISTS public.subject
+(
+    sbid integer NOT NULL DEFAULT nextval('subject_sbid_seq'::regclass),
+    subjects text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT subject_pkey PRIMARY KEY (sbid)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.subject
+    OWNER to kamegatze;
+    
+--преподаватели
+CREATE TABLE IF NOT EXISTS public.teacher
+(
+    teachid integer NOT NULL DEFAULT nextval('teacher_teachid_seq'::regclass),
+    lastname text COLLATE pg_catalog."default" NOT NULL,
+    firstname text COLLATE pg_catalog."default" NOT NULL,
+    patronymic text COLLATE pg_catalog."default" NOT NULL,
+    email text COLLATE pg_catalog."default" NOT NULL,
+    password text COLLATE pg_catalog."default",
+    role text COLLATE pg_catalog."default",
+    CONSTRAINT teacher_pkey PRIMARY KEY (teachid)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.teacher
+    OWNER to postgres;
